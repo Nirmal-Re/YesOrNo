@@ -1,0 +1,48 @@
+.welcomeCont {
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 375px;
+  justify-content: center;
+  background: linear-gradient(
+    175.15deg,
+    #eb0d0d -1.92%,
+    rgba(255, 255, 255, 0) 68.01%
+  );
+}
+
+.textHome {
+  position: absolute;
+  bottom: -5%;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: flex-end;
+  font-size: 36px;
+  line-height: 66px;
+  letter-spacing: 0.15em;
+  color: #110c0c;
+}
+
+.textHome .dare {
+  font-family: "Martel Sans";
+  color: red;
+  text-align: center;
+}
+
+.textHome .understand {
+  text-align: center;
+}
+
+.textHome .control {
+  text-align: center;
+  font-size: 50px;
+  font-family: "Itim";
+
+  background: linear-gradient(180deg, #000000 0%, rgba(0, 0, 0, 0) 95.31%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+
+  text-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
+}
