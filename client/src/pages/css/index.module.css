@@ -1,3 +1,9 @@
+.homeContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
 .welcomeCont {
   position: relative;
   display: flex;
@@ -13,7 +19,7 @@
 
 .textHome {
   position: absolute;
-  bottom: -5%;
+  bottom: -50%;
   display: flex;
   height: 100%;
   flex-direction: column;
@@ -26,12 +32,14 @@
 
 .textHome .dare {
   font-family: "Martel Sans";
-  color: red;
+  color: blue;
   text-align: center;
 }
 
 .textHome .understand {
+  font-weight: 100px;
   text-align: center;
+  color: rgb(103, 196, 32);
 }
 
 .textHome .control {
@@ -43,6 +51,43 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-
   text-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
+}
+
+.buttonContainer {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.buttonContainer .loginContainer {
+  height: 100%;
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.buttonContainer .login {
+  width: 11rem;
+  height: 6rem;
+  background-color: blue;
+}
+
+.buttonContainer .signupContainer {
+  height: 100%;
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.buttonContainer .signup {
+  width: 11rem;
+  height: 6rem;
+  background-color: red;
+}
+
+.txt {
+  color: white;
 }
