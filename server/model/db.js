@@ -1,16 +1,38 @@
-const mysql = require("mysql2");
+const mysql = require("mysql2/promise");
 
-const connection = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "TempPass123",
-  database: "YesNo",
-});
+const { DB } = require("../constants");
 
-connection.query(`show tables`, (err, results, fields) => {
-  if (err) {
-    console.log(err);
-    return;
+let con;
+const dbConnect = async (dbConData) => {
+  con = await mysql.createConnection({ ...dbConData });
+};
+
+const insert = async (tblName, data) => {
+  try {
+    await dbConnect(DB);
+    con.query(`INSERT INTO ${tblName} SET ?`, data);
+  } catch (e) {
+    console.log(e);
   }
-  console.log(results);
-});
+};
+
+// const dummy_userData = {
+//   username: "NBS1",
+//   email: "NB@yahoo.com",
+//   first_name: "walter",
+//   last_name: "white",
+// };
+
+// insert("tbl_user_login_data", dummy_userData);
+
+// connection.query(
+//   `INSERT INTO tbl_user_login_data SET ?`,
+//   user_data,
+//   (err, result, fields) => {
+//     if (err) {
+//       console.log(err);
+//     } else {
+//       console.log(result);
+//     }
+//   }
+// );
