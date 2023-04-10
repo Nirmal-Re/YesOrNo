@@ -13,6 +13,9 @@ export default function NavBar() {
           <Nav.Link className="text-white" href="/contact">
             Contact
           </Nav.Link>
+          <Nav.Link className="text-white" href="/login">
+            Login
+          </Nav.Link>
         </Nav>
       </Container>
     </Navbar>

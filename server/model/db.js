@@ -16,6 +16,26 @@ const insert = async (tblName, data) => {
   }
 };
 
+const retrieve = async (tblName, fields, username) => {
+  try {
+    await dbConnect(DB);
+    const p = fields.join(", ");
+
+    const data = await con.query(
+      `SELECT ${p} FROM ${tblName} WHERE username='${username}'`
+    );
+    console.log(`SELECT ${p} FROM ${tblName} WHERE username='${username}'`);
+    console.log(data[0][0]);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+module.exports = {
+  insert,
+  retrieve,
+};
+
 // const dummy_userData = {
 //   username: "NBS1",
 //   email: "NB@yahoo.com",
