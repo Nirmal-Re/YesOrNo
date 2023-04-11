@@ -5,6 +5,7 @@ const { DB } = require("../constants");
 let con;
 const dbConnect = async (dbConData) => {
   con = await mysql.createConnection({ ...dbConData });
+  return con;
 };
 
 const insert = async (tblName, data) => {
@@ -25,7 +26,20 @@ const retrieve = async (tblName, fields, username) => {
       `SELECT ${p} FROM ${tblName} WHERE username='${username}'`
     );
     console.log(`SELECT ${p} FROM ${tblName} WHERE username='${username}'`);
-    console.log(data[0][0]);
+    return data[0][0];
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+const checkKeyExist = async (tblName, field, key) => {
+  try {
+    await dbConnect(DB);
+    // console.log(`SELECT true AS exist FROM ${tblName} WHERE ${field}='${key}'`);
+    const qData = await con.query(
+      `SELECT 1 AS exist FROM ${tblName} WHERE ${field}='${key}'`
+    );
+    return qData[0][0];
   } catch (e) {
     console.log(e);
   }
@@ -34,6 +48,7 @@ const retrieve = async (tblName, fields, username) => {
 module.exports = {
   insert,
   retrieve,
+  checkKeyExist,
 };
 
 // const dummy_userData = {

@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 
-const { insert, retrieve } = require("./db");
+const { insert, retrieve, checkKeyExist } = require("./db");
 
 const createUser = async (usrData) => {
   try {
@@ -18,13 +18,33 @@ const createUser = async (usrData) => {
   }
 };
 
-const checkUser = async (usrData) => {
+const checkUserExist = async (usrData) => {
   try {
     const { username } = usrData;
-    console.log(username);
+    const tblName = "tbl_user_login_data";
+    const field = "username";
+    const value = await checkKeyExist(tblName, field, username);
+    if (value?.exist) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (e) {
+    console.log(e);
+  }
+};
+const checkPass = async (usrData) => {
+  try {
+    const { username, password } = usrData;
     const tblName = "tbl_user_login_data";
     const fields = ["username", "passwordHash", "passwordSalt"];
-    retrieve(tblName, fields, username);
+    const dbData = await retrieve(tblName, fields, username);
+    const usrPassHash = await bcrypt.hash(password, dbData.passwordHash);
+    if (dbData.passwordHash === usrPassHash) {
+      return true;
+    } else {
+      return false;
+    }
   } catch (e) {
     console.log(e);
   }
@@ -32,5 +52,6 @@ const checkUser = async (usrData) => {
 
 module.exports = {
   createUser,
-  checkUser,
+  checkPass,
+  checkUserExist,
 };
