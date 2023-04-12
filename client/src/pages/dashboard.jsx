@@ -1,7 +1,7 @@
 import homeCSS from "./css/home.module.scss";
 import { Button } from "react-bootstrap";
 
-export default function Home() {
+export default function Dashboard() {
   return (
     <div className={homeCSS.pageContainer}>
       <div className={homeCSS.welcomeUser}>

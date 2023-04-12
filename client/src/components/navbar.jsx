@@ -1,11 +1,11 @@
 import { Navbar, Container, Nav } from "react-bootstrap";
 
-export default function NavBar(data) {
+export default function NavBar({ data, onLogout }) {
   return (
     <Navbar bg="danger" expand="lg">
       <Container>
         <Nav className={`me-auto text-white`}>
-          <Nav.Link className="text-white" href="/home">
+          <Nav.Link className="text-white" href="/">
             Home
           </Nav.Link>
           <Nav.Link className="text-white" href="/about">
@@ -14,8 +14,8 @@ export default function NavBar(data) {
           <Nav.Link className="text-white" href="/contact">
             Contact
           </Nav.Link>
-          {data?.data?.loggedIn ? (
-            <Nav.Link className="text-white" onClick={data.onLogout}>
+          {data?.loggedIn ? (
+            <Nav.Link className="text-white" onClick={onLogout}>
               Logout
             </Nav.Link>
           ) : (
