@@ -45,10 +45,25 @@ const checkKeyExist = async (tblName, field, key) => {
   }
 };
 
+const update = async (tblName, field, value, condition) => {
+  try {
+    await dbConnect(DB);
+    const qry = `UPDATE ${tblName} SET ${field} = ${value} WHERE ${condition}`;
+    const result = await con.query(qry);
+    console.log(result);
+    console.log(
+      "USER could or couldn't have been confirmed. The end on the update() function was reached"
+    );
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 module.exports = {
   insert,
   retrieve,
   checkKeyExist,
+  update,
 };
 
 // const dummy_userData = {

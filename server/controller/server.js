@@ -1,10 +1,16 @@
 const express = require("express");
 const session = require("express-session");
-const { restart } = require("nodemon");
+const jwt = require("jsonwebtoken");
 
 const path = require("path");
 
-const { createUser, checkPass, checkUserExist } = require("../model/user.js");
+const {
+  createUser,
+  checkPass,
+  checkUserExist,
+  confirmUser,
+} = require("../model/user.js");
+const { TOKEN_SECRET_KEY } = require("../constants");
 
 const app = express();
 app.use(express.json());
@@ -22,6 +28,7 @@ app.use(express.static(path.join(__dirname, "/../../client/build")));
 app.post("/userData", async (req, res) => {
   console.log("User Data Route Accessed");
   const usrData = req.body;
+  //TODO Check if username or Email already exist
   await createUser(usrData);
   res.redirect("/login");
 });
@@ -70,6 +77,13 @@ app.get("/logOut", (req, res) => {
     loggedIn: false,
   };
   res.send(temp);
+});
+
+app.get("/confirm/:token", (req, res) => {
+  const { username } = jwt.verify(req.params.token, TOKEN_SECRET_KEY);
+  if (checkUserExist(username)) {
+    confirmUser(username);
+  }
 });
 
 app.get("/*", (req, res) => {

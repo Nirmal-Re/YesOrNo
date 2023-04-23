@@ -1,5 +1,5 @@
 .DS_Store
 /client/.DS_Store
-server/.DS_Store
-server/node_modules
-server/constant.js
+/server/.DS_Store
+/server/node_modules
+/server/constant.js
