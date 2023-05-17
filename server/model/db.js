@@ -23,7 +23,7 @@ const retrieve = async (tblName, fields, username) => {
     const p = fields.join(", ");
 
     const data = await con.query(
-      `SELECT ${p} FROM ${tblName} WHERE username='${username}'`
+      `SELECT ${p} FROM ${tblName} WHERE username='${username}' OR email='${username}'`
     );
     console.log(`SELECT ${p} FROM ${tblName} WHERE username='${username}'`);
     return data[0][0];
@@ -32,23 +32,44 @@ const retrieve = async (tblName, fields, username) => {
   }
 };
 
-const checkKeyExist = async (tblName, field, key) => {
+const checkKeyValueExist = async (tblName, fields, key) => {
   try {
     await dbConnect(DB);
-    // console.log(`SELECT true AS exist FROM ${tblName} WHERE ${field}='${key}'`);
-    const qData = await con.query(
-      `SELECT 1 AS exist FROM ${tblName} WHERE ${field}='${key}'`
+    const conditions = fields.map((field) => {
+      return `${field} = "${key}"`;
+    });
+    console.log(
+      `SELECT 1 AS exist FROM ${tblName} WHERE ${conditions.join(" OR ")}`
     );
+    const qData = await con.query(
+      `SELECT 1 AS exist FROM ${tblName} WHERE ${conditions.join(" OR ")}`
+    );
+    console.log(qData[0][0]);
     return qData[0][0];
   } catch (e) {
     console.log(e);
   }
 };
 
-const update = async (tblName, field, value, condition) => {
+const update = async (tblName, toSet, condition) => {
   try {
     await dbConnect(DB);
-    const qry = `UPDATE ${tblName} SET ${field} = ${value} WHERE ${condition}`;
+
+    const set = [];
+    Object.entries(toSet).forEach((fv) => {
+      val = `${fv[0]} = '${fv[1]}'`;
+      set.push(val);
+    });
+
+    const cond = [];
+    Object.entries(condition).forEach((fv) => {
+      val = `${fv[0]} = '${fv[1]}'`;
+      cond.push(val);
+    });
+
+    const qry = `UPDATE ${tblName} SET ${set.join(",")} WHERE ${cond.join(
+      " AND "
+    )}`;
     const result = await con.query(qry);
     console.log(result);
     console.log(
@@ -62,7 +83,7 @@ const update = async (tblName, field, value, condition) => {
 module.exports = {
   insert,
   retrieve,
-  checkKeyExist,
+  checkKeyValueExist,
   update,
 };
 

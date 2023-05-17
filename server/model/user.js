@@ -1,24 +1,35 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { TOKEN_SECRET_KEY, USER_EMAIL } = require("../constants");
+const {
+  TOKEN_SECRET_KEY,
+  PASSWORD_SECRET_KEY,
+  USER_EMAIL,
+} = require("../constants");
 
-const { insert, retrieve, checkKeyExist, update } = require("./db");
+const { insert, retrieve, checkKeyValueExist, update } = require("./db");
 const { send } = require("../email/email.js");
+
+const hashPassword = async (password) => {
+  const passwordSalt = await bcrypt.genSalt();
+  const passwordHash = await bcrypt.hash(password, passwordSalt);
+  const hashAlgorithm = "bcrypt";
+  return { passwordSalt, passwordHash, hashAlgorithm };
+};
 
 const createUser = async (usrData) => {
   try {
     console.log(usrData);
-    const passwordSalt = await bcrypt.genSalt();
-    const passwordHash = await bcrypt.hash(usrData.password, passwordSalt);
+    const { passwordSalt, passwordHash, hashAlgorithm } = hashPassword(
+      usrData.password
+    );
     usrData.passwordSalt = passwordSalt;
     usrData.passwordHash = passwordHash;
-    usrData.hashAlgorithm = "bcrypt";
+    usrData.hashAlgorithm = hashAlgorithm;
     const tblName = "tbl_user_login_data"; //todo add in constant file
     delete usrData.password;
     const token = jwt.sign({ username: usrData.username }, TOKEN_SECRET_KEY, {
       expiresIn: "1d",
     });
-    console.log(token);
 
     const text = `http://localhost:4000/confirm/${token}`;
 
@@ -38,13 +49,12 @@ const createUser = async (usrData) => {
   }
 };
 
-const checkUserExist = async (usrData) => {
+const checkUserExist = async (value) => {
   try {
-    const { username } = usrData;
     const tblName = "tbl_user_login_data";
-    const field = "username";
-    const value = await checkKeyExist(tblName, field, username);
-    if (value?.exist) {
+    const keys = ["username", "email"];
+    const check = await checkKeyValueExist(tblName, keys, value);
+    if (check?.exist) {
       return true;
     } else {
       return false;
@@ -53,9 +63,9 @@ const checkUserExist = async (usrData) => {
     console.log(e);
   }
 };
-const checkPass = async (usrData) => {
+const checkPass = async (userData) => {
   try {
-    const { username, password } = usrData;
+    const { username, password } = userData;
     const tblName = "tbl_user_login_data";
     const fields = ["username", "passwordHash", "passwordSalt"];
     const dbData = await retrieve(tblName, fields, username);
@@ -70,19 +80,48 @@ const checkPass = async (usrData) => {
   }
 };
 
+const updateUserPassword = async (password, email) => {
+  const { passwordHash, passwordSalt, hashAlgorithm } = await hashPassword(
+    password
+  );
+  const tblName = "tbl_user_login_data";
+  const returnValue = await update(
+    tblName,
+    { passwordHash, passwordSalt, hashAlgorithm },
+    { email }
+  );
+  return returnValue;
+};
+
 const confirmUser = async (username) => {
   try {
     const tblName = "tbl_user_login_data";
-    const field = "confirmEmail";
-    const value = true;
-    const condition = `username = '${username}'`;
-    update(tblName, field, value, condition);
-  } catch (e) {}
+    update(tblName, { confirmEmail: true }, { username: `${username}` });
+  } catch (e) {
+    console.log(e);
+  }
 };
 
+const changePasswordToken = async (email) => {
+  const token = jwt.sign({ email }, PASSWORD_SECRET_KEY, {
+    expiresIn: "1d",
+  });
+  console.log(token);
+
+  const text = `http://localhost:4000/changePassword/${token}`;
+  const options = {
+    from: USER_EMAIL,
+    to: email,
+    subject: "confirmation",
+    text,
+  };
+  send(options);
+};
 module.exports = {
   createUser,
   checkPass,
   checkUserExist,
   confirmUser,
+  changePasswordToken,
+  updateUserPassword,
 };

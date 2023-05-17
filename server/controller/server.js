@@ -9,8 +9,11 @@ const {
   checkPass,
   checkUserExist,
   confirmUser,
+  changePasswordToken,
+  updateUserPassword,
 } = require("../model/user.js");
-const { TOKEN_SECRET_KEY } = require("../constants");
+const { TOKEN_SECRET_KEY, PASSWORD_SECRET_KEY } = require("../constants");
+const { application } = require("express");
 
 const app = express();
 app.use(express.json());
@@ -25,7 +28,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, "/../../client/build")));
 
-app.post("/userData", async (req, res) => {
+app.post("/userdata", async (req, res) => {
   console.log("User Data Route Accessed");
   const usrData = req.body;
   //TODO Check if username or Email already exist
@@ -34,8 +37,8 @@ app.post("/userData", async (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
-  const usrData = req.body;
-  if (await checkUserExist(usrData)) {
+  const { username, password } = req.body;
+  if (await checkUserExist(username)) {
     console.log("User Exist");
   } else {
     return res.send({
@@ -43,11 +46,11 @@ app.post("/login", async (req, res) => {
     });
   }
 
-  if (await checkPass(usrData)) {
+  if (await checkPass({ username, password })) {
     console.log("User Logged In");
     req.session.authenticated = true;
     req.session.user = {
-      username: usrData.username,
+      username,
     };
     return res.redirect("/login");
   } else {
@@ -57,7 +60,7 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.get("/isLoggedIn", (req, res) => {
+app.get("/isLoggedin", (req, res) => {
   const temp = {
     loggedIn: false,
   };
@@ -71,7 +74,7 @@ app.get("/isLoggedIn", (req, res) => {
   }
 });
 
-app.get("/logOut", (req, res) => {
+app.get("/logout", (req, res) => {
   req.session.destroy();
   const temp = {
     loggedIn: false,
@@ -79,10 +82,53 @@ app.get("/logOut", (req, res) => {
   res.send(temp);
 });
 
-app.get("/confirm/:token", (req, res) => {
+app.get("/confirm/:token", async (req, res) => {
   const { username } = jwt.verify(req.params.token, TOKEN_SECRET_KEY);
-  if (checkUserExist(username)) {
+  if (await checkUserExist(username)) {
     confirmUser(username);
+  }
+});
+
+app.get("/isChangingPass/:token", async (req, res) => {
+  const { token } = req.params;
+  const { email } = jwt.verify(token, PASSWORD_SECRET_KEY);
+  if (await checkUserExist(email)) {
+    res.send({ passChange: true });
+  } else {
+    res.send({ passChange: false });
+  }
+});
+
+app.post("/forgotPassword", async (req, res) => {
+  const { email } = req.body;
+  if (await checkUserExist(email)) {
+    changePasswordToken(email);
+  } else {
+    res.json({ error: "Email Doesn't Exist" });
+  }
+});
+
+app.get("/changePassword/:token", async (req, res) => {
+  const { token } = req.params;
+  const { email } = jwt.verify(token, PASSWORD_SECRET_KEY);
+  if (await checkUserExist(email)) {
+    res.redirect(`/resetPassword/${token}`);
+  } else {
+    res.json({ error: "something went wrong" });
+  }
+});
+
+app.post("/resetPassword/:token", async (req, res) => {
+  const { token } = req.params;
+  const { email } = jwt.verify(token, PASSWORD_SECRET_KEY);
+  const { password } = req.body;
+  if (await checkUserExist(email)) {
+    console.log(password);
+    const result = await updateUserPassword(password, email);
+    console.log(result);
+    res.json({ message: "Password Change sucessfull" });
+  } else {
+    res.json({ error: "something went wrong" });
   }
 });
 
