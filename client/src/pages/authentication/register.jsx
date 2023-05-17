@@ -23,7 +23,7 @@ class Register extends Component {
 
           <Form.Group className="mb-3" controlId="formBasicPassword">
             <Form.Label>Username</Form.Label>
-            <Form.Control name="userName" type="text" placeholder="Username" />
+            <Form.Control name="username" type="text" placeholder="Username" />
           </Form.Group>
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label>Email address</Form.Label>

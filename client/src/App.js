@@ -11,6 +11,7 @@ import Login from "./pages/authentication/login";
 import NavBar from "./components/navbar";
 import LoggedRoutes from "./privateRoute/loggedRoutes";
 import UnloggedRoutes from "./privateRoute/unloggedRoutes";
+import ChangePasswordRoute from "./privateRoute/changePasswordRoute";
 
 function App() {
   const [userStatus, setUserStatus] = useState({ loggedIn: false });
@@ -22,7 +23,6 @@ function App() {
   };
 
   const handleLogOut = async () => {
-    console.log("Hello");
     const url = `http://localhost:4000/logOut`;
     const response = await axios.get(url, { withCredentials: true });
     setUserStatus(response.data);
@@ -49,6 +49,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Index />} />
         </Route>
+        <Route element={<ChangePasswordRoute path="/resetPassword/:token" />} />
         <Route path="/" element={<Index />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />

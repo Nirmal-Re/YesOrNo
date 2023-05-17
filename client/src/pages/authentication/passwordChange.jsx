@@ -2,16 +2,12 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import React from "react";
 
-export default function Login() {
+export default function PasswordChange() {
   return (
     <div className="container">
-      <Form method="post" action="/login">
+      <Form method="post">
         <Form.Group className="mb-3" controlId="formBasicPassword">
-          <Form.Label>Username</Form.Label>
-          <Form.Control name="username" type="text" placeholder="Username" />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="formBasicPassword">
-          <Form.Label>Password</Form.Label>
+          <Form.Label>New Password</Form.Label>
           <Form.Control
             name="password"
             type="password"
