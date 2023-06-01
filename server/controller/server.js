@@ -1,6 +1,7 @@
 const express = require("express");
 const session = require("express-session");
 const jwt = require("jsonwebtoken");
+const cors = require("cors");
 
 const path = require("path");
 
@@ -13,9 +14,11 @@ const {
   updateUserPassword,
 } = require("../model/user.js");
 const { TOKEN_SECRET_KEY, PASSWORD_SECRET_KEY } = require("../constants");
+const { FRONTEND_URL } = process.env;
 const { application } = require("express");
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 app.use(
   session({
@@ -33,7 +36,7 @@ app.post("/userdata", async (req, res) => {
   const usrData = req.body;
   //TODO Check if username or Email already exist
   await createUser(usrData);
-  res.redirect("/login");
+  res.redirect(`${FRONT_END_URL}/login`);
 });
 
 app.post("/login", async (req, res) => {
@@ -47,12 +50,11 @@ app.post("/login", async (req, res) => {
   }
 
   if (await checkPass({ username, password })) {
-    console.log("User Logged In");
     req.session.authenticated = true;
     req.session.user = {
       username,
     };
-    return res.redirect("/login");
+    return res.redirect(`${FRONT_END_URL}/login`);
   } else {
     return res.send({
       message: "Incorrect Password",
@@ -65,11 +67,9 @@ app.get("/isLoggedin", (req, res) => {
     loggedIn: false,
   };
   if (req.session.authenticated) {
-    console.log("User IS Logged In");
     temp.loggedIn = true;
     res.send(temp);
   } else {
-    console.log("User Isn't Logged In");
     res.send(temp);
   }
 });
@@ -93,6 +93,7 @@ app.get("/isChangingPass/:token", async (req, res) => {
   const { token } = req.params;
   const { email } = jwt.verify(token, PASSWORD_SECRET_KEY);
   if (await checkUserExist(email)) {
+    console.log("Hello what is happening");
     res.send({ passChange: true });
   } else {
     res.send({ passChange: false });
