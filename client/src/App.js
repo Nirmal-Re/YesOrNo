@@ -11,15 +11,14 @@ import Login from "./pages/authentication/login";
 import NavBar from "./components/navbar";
 import LoggedRoutes from "./privateRoute/loggedRoutes";
 import UnloggedRoutes from "./privateRoute/unloggedRoutes";
-// import ChangePasswordRoute from "./privateRoute/changePasswordRoute";
-import PasswordChange from "./pages/authentication/passwordChange";
+import ChangePassword from "./pages/authentication/changePassword";
 
 function App() {
   const [userStatus, setUserStatus] = useState({ loggedIn: false });
   const { REACT_APP_BACKEND_URL } = process.env;
 
   const isLoggedIn = async () => {
-    const url = `${REACT_APP_BACKEND_URL}/isLoggedIn`;
+    const url = `${REACT_APP_BACKEND_URL}/isLoggedin`;
     const response = await axios.get(url, { withCredentials: true });
     setUserStatus(response.data);
   };
@@ -54,7 +53,7 @@ function App() {
         <Route path="/" element={<Index />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/changePassword/:token" element={<PasswordChange />} />
+        <Route path="/changePassword/:token" element={<ChangePassword />} />
       </Routes>
     </div>
   );

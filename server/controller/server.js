@@ -14,7 +14,7 @@ const {
   updateUserPassword,
 } = require("../model/user.js");
 const { TOKEN_SECRET_KEY, PASSWORD_SECRET_KEY } = require("../constants");
-const { FRONTEND_URL } = process.env;
+const { FRONT_END_URL } = process.env;
 const { application } = require("express");
 
 const app = express();
@@ -54,7 +54,7 @@ app.post("/login", async (req, res) => {
     req.session.user = {
       username,
     };
-    return res.redirect(`${FRONT_END_URL}/login`);
+    return res.json({ loggedIn: true });
   } else {
     return res.send({
       message: "Incorrect Password",
@@ -63,6 +63,7 @@ app.post("/login", async (req, res) => {
 });
 
 app.get("/isLoggedin", (req, res) => {
+  console.log("isLoggedin api hit");
   const temp = {
     loggedIn: false,
   };
@@ -93,7 +94,6 @@ app.get("/isChangingPass/:token", async (req, res) => {
   const { token } = req.params;
   const { email } = jwt.verify(token, PASSWORD_SECRET_KEY);
   if (await checkUserExist(email)) {
-    console.log("Hello what is happening");
     res.send({ passChange: true });
   } else {
     res.send({ passChange: false });
@@ -109,15 +109,16 @@ app.post("/forgotPassword", async (req, res) => {
   }
 });
 
-app.get("/changePassword/:token", async (req, res) => {
-  const { token } = req.params;
-  const { email } = jwt.verify(token, PASSWORD_SECRET_KEY);
-  if (await checkUserExist(email)) {
-    res.redirect(`/resetPassword/${token}`);
-  } else {
-    res.json({ error: "something went wrong" });
-  }
-});
+// app.get("/changePassword/:token", async (req, res) => {
+//   const { token } = req.params;
+//   const { email } = jwt.verify(token, PASSWORD_SECRET_KEY);
+//   if (await checkUserExist(email)) {
+//     res.send({ passChange: true });
+//     // res.redirect(`/resetPassword/${token}`);
+//   } else {
+//     res.json({ error: "something went wrong" });
+//   }
+// });
 
 app.post("/resetPassword/:token", async (req, res) => {
   const { token } = req.params;

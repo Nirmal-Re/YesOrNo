@@ -108,7 +108,7 @@ const changePasswordToken = async (email) => {
   });
   console.log(token);
 
-  const text = `http://localhost:4000/changePassword/${token}`;
+  const text = `http://localhost:3000/changePassword/${token}`; //TODO frontend url
   const options = {
     from: USER_EMAIL,
     to: email,
