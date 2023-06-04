@@ -1,27 +1,16 @@
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { useParams } from "react-router-dom";
+import React, { useState } from "react";
 
 export default function ChangePassword() {
-  const [authorised, setAuthorised] = useState({ passChange: false });
   const [password, setPassword] = useState("");
-  const { token } = useParams();
-
-  useEffect(() => {
-    const url = `${process.env.REACT_APP_BACKEND_URL}/isChangingPass/${token}`;
-    axios.get(url).then((response) => {
-      setAuthorised(response.data);
-    });
-  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log({ password });
   };
 
-  return authorised.passChange ? (
+  return (
     <div className="container">
       <Form onSubmit={handleSubmit}>
         <Form.Group className="mb-3" controlId="formBasicPassword">
@@ -39,7 +28,5 @@ export default function ChangePassword() {
         </Button>
       </Form>
     </div>
-  ) : (
-    "div"
   );
 }

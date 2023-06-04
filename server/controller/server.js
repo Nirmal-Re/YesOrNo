@@ -19,6 +19,12 @@ const { application } = require("express");
 
 const app = express();
 app.use(cors());
+app.use(function (req, res, next) {
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  next();
+});
+
 app.use(express.json());
 app.use(
   session({
@@ -92,10 +98,15 @@ app.get("/confirm/:token", async (req, res) => {
 
 app.get("/isChangingPass/:token", async (req, res) => {
   const { token } = req.params;
-  const { email } = jwt.verify(token, PASSWORD_SECRET_KEY);
-  if (await checkUserExist(email)) {
-    res.send({ passChange: true });
-  } else {
+  try {
+    const { email } = jwt.verify(token, PASSWORD_SECRET_KEY);
+
+    if (await checkUserExist(email)) {
+      res.send({ passChange: true });
+    } else {
+      res.send({ passChange: false });
+    }
+  } catch (e) {
     res.send({ passChange: false });
   }
 });

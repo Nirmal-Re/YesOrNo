@@ -11,6 +11,7 @@ import Login from "./pages/authentication/login";
 import NavBar from "./components/navbar";
 import LoggedRoutes from "./privateRoute/loggedRoutes";
 import UnloggedRoutes from "./privateRoute/unloggedRoutes";
+import ChangePasswordRoute from "./privateRoute/changePasswordRoute";
 import ChangePassword from "./pages/authentication/changePassword";
 
 function App() {
@@ -53,7 +54,9 @@ function App() {
         <Route path="/" element={<Index />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/changePassword/:token" element={<ChangePassword />} />
+        <Route element={<ChangePasswordRoute />}>
+          <Route path="/changePassword/:token" element={<ChangePassword />} />
+        </Route>
       </Routes>
     </div>
   );
