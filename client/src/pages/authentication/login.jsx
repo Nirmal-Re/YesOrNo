@@ -16,6 +16,7 @@ export default function Login() {
     const url = `${process.env.REACT_APP_BACKEND_URL}/login`;
     const userdata = { username, password };
     axios.post(url, userdata).then((response) => {
+      console.log("Response for Login: ", response);
       if (response.data.loggedIn) {
         navigate("/dashboard");
       }

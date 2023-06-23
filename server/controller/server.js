@@ -15,13 +15,16 @@ const {
 } = require("../model/user.js");
 const { TOKEN_SECRET_KEY, PASSWORD_SECRET_KEY } = require("../constants");
 const { FRONT_END_URL } = process.env;
-const { application } = require("express");
 
 const app = express();
 app.use(cors());
 app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
   res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
   next();
 });
 
@@ -60,6 +63,7 @@ app.post("/login", async (req, res) => {
     req.session.user = {
       username,
     };
+    console.log("Session on successful login: ", req.session);
     return res.json({ loggedIn: true });
   } else {
     return res.send({
@@ -69,10 +73,10 @@ app.post("/login", async (req, res) => {
 });
 
 app.get("/isLoggedin", (req, res) => {
-  console.log("isLoggedin api hit");
   const temp = {
     loggedIn: false,
   };
+  console.log("Session on isLogged In", req.session);
   if (req.session.authenticated) {
     temp.loggedIn = true;
     res.send(temp);
