@@ -17,7 +17,7 @@ const { TOKEN_SECRET_KEY, PASSWORD_SECRET_KEY } = require("../constants");
 const { FRONT_END_URL } = process.env;
 
 const app = express();
-app.use(cors());
+app.use(cors({ credentials: true, origin: true }));
 app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
   res.setHeader("Access-Control-Allow-Credentials", "true");
@@ -32,8 +32,9 @@ app.use(express.json());
 app.use(
   session({
     secret: "some secret",
-    cookie: { maxAge: 5000000 },
+    cookie: { maxAge: 5000000, httpOnly: false },
     saveUninitialized: false,
+    resave: false,
   })
 );
 app.use(express.urlencoded({ extended: true }));
@@ -64,6 +65,7 @@ app.post("/login", async (req, res) => {
       username,
     };
     console.log("Session on successful login: ", req.session);
+    req.session.save();
     return res.json({ loggedIn: true });
   } else {
     return res.send({
@@ -73,10 +75,11 @@ app.post("/login", async (req, res) => {
 });
 
 app.get("/isLoggedin", (req, res) => {
+  console.log("[isLoggedin] API hit => ");
+  res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
   const temp = {
     loggedIn: false,
   };
-  console.log("Session on isLogged In", req.session);
   if (req.session.authenticated) {
     temp.loggedIn = true;
     res.send(temp);
@@ -136,17 +139,20 @@ app.post("/forgotPassword", async (req, res) => {
 // });
 
 app.post("/resetPassword/:token", async (req, res) => {
-  const { token } = req.params;
-  const { email } = jwt.verify(token, PASSWORD_SECRET_KEY);
-  const { password } = req.body;
-  if (await checkUserExist(email)) {
-    console.log(password);
-    const result = await updateUserPassword(password, email);
-    console.log(result);
-    res.json({ message: "Password Change sucessfull" });
-  } else {
-    res.json({ error: "something went wrong" });
-  }
+  try {
+    const { token } = req.params;
+    console.log(token);
+    const { email } = jwt.verify(token, PASSWORD_SECRET_KEY);
+    const { password } = req.body;
+    if (await checkUserExist(email)) {
+      console.log(password);
+      const result = await updateUserPassword(password, email);
+      console.log(result);
+      res.json({ message: "Password Change sucessfull" });
+    } else {
+      res.json({ error: "Something went wrong" });
+    }
+  } catch (e) {}
 });
 
 app.get("/*", (req, res) => {

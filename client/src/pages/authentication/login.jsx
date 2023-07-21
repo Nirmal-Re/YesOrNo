@@ -15,8 +15,7 @@ export default function Login() {
     e.preventDefault();
     const url = `${process.env.REACT_APP_BACKEND_URL}/login`;
     const userdata = { username, password };
-    axios.post(url, userdata).then((response) => {
-      console.log("Response for Login: ", response);
+    axios.post(url, userdata, { withCredentials: true }).then((response) => {
       if (response.data.loggedIn) {
         navigate("/dashboard");
       }

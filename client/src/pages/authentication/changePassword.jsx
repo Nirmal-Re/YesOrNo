@@ -1,13 +1,21 @@
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import React, { useState } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
-export default function ChangePassword() {
+export default function ChangePassword(data) {
   const [password, setPassword] = useState("");
-
-  const handleSubmit = (e) => {
+  const { REACT_APP_BACKEND_URL } = process.env;
+  const { token } = useParams();
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({ password });
+    const URL = `${REACT_APP_BACKEND_URL}/resetPassword/${token}`;
+    const response = await axios.post(
+      URL,
+      { password },
+      { withCredentials: true }
+    );
   };
 
   return (

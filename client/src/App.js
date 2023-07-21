@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 import Index from "./pages";
 import Dashboard from "./pages/dashboard";
@@ -16,6 +17,7 @@ import ChangePassword from "./pages/authentication/changePassword";
 
 function App() {
   const [userStatus, setUserStatus] = useState({ loggedIn: false });
+  const location = useLocation();
   const { REACT_APP_BACKEND_URL } = process.env;
 
   const isLoggedIn = async () => {
@@ -32,7 +34,7 @@ function App() {
 
   useEffect(() => {
     isLoggedIn();
-  }, []);
+  }, [location]);
 
   return (
     <div>
