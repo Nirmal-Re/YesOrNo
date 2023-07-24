@@ -6,6 +6,10 @@ import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+//css
+import "./css/login.module.scss";
+import styles from "./css/login.module.scss";
+
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -22,11 +26,12 @@ export default function Login() {
     });
   };
   return (
-    <div className="container">
-      <Form onSubmit={handleSubmit}>
-        <Form.Group className="mb-3" controlId="formBasicPassword">
-          <Form.Label>Username</Form.Label>
+    <div className={styles.authenticateForm}>
+      <div className={styles.header}> Login</div>
+      <Form onSubmit={handleSubmit} className={styles.loginForm}>
+        <Form.Group className={`mb-3`} controlId="formBasicPassword">
           <Form.Control
+            className={`${styles.input}`}
             type="text"
             required
             placeholder="Username"
@@ -34,9 +39,9 @@ export default function Login() {
             onChange={(e) => setUsername(e.target.value)}
           />
         </Form.Group>
-        <Form.Group className="mb-3" controlId="formBasicPassword">
-          <Form.Label>Password</Form.Label>
+        <Form.Group className={`mb-3`} controlId="formBasicPassword">
           <Form.Control
+            className={`${styles.input}`}
             type="password"
             required
             placeholder="Password"
@@ -44,10 +49,21 @@ export default function Login() {
             onChange={(e) => setPassword(e.target.value)}
           />
         </Form.Group>
-        <Button variant="primary" type="submit">
+
+        <Button className={styles.submitButton} varient="primary" type="submit">
           Log In
         </Button>
       </Form>
+      <div className={styles.bottom}>
+        <div>
+          <input type="checkbox" />{" "}
+          <span className={styles.left}>Remember Me</span>
+        </div>
+
+        <a href="/forgotPassword" className={styles.right}>
+          Forgot Password
+        </a>
+      </div>
     </div>
   );
 }

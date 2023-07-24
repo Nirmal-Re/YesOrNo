@@ -17,12 +17,12 @@ class Index extends Component {
         <div className={homeCSS.buttonContainer}>
           <div className={homeCSS.loginContainer}>
             <Button variant="warning" size="lg">
-              LOG IN
+              <a href="/login">LOG IN</a>
             </Button>
           </div>
           <div className={homeCSS.signupContainer}>
             <Button className={homeCSS.txt} variant="danger" size="lg">
-              SIGN UP
+              <a href="/signup">SIGN UP</a>
             </Button>
           </div>
         </div>

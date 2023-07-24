@@ -7,13 +7,14 @@ import Index from "./pages";
 import Dashboard from "./pages/dashboard";
 import About from "./pages/about";
 import Contact from "./pages/contact";
-import Register from "./pages/authentication/register";
 import Login from "./pages/authentication/login";
+import Register from "./pages/authentication/register";
 import NavBar from "./components/navbar";
 import LoggedRoutes from "./privateRoute/loggedRoutes";
 import UnloggedRoutes from "./privateRoute/unloggedRoutes";
 import ChangePasswordRoute from "./privateRoute/changePasswordRoute";
 import ChangePassword from "./pages/authentication/changePassword";
+import "./index.css";
 
 function App() {
   const [userStatus, setUserStatus] = useState({ loggedIn: false });
@@ -51,6 +52,7 @@ function App() {
         <Route element={<UnloggedRoutes data={userStatus} />}>
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Register />} />
           <Route path="/" element={<Index />} />
         </Route>
         <Route path="/" element={<Index />} />
