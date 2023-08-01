@@ -98,6 +98,7 @@ app.get("/logout", (req, res) => {
 
 app.get("/confirm/:token", async (req, res) => {
   const { username } = jwt.verify(req.params.token, TOKEN_SECRET_KEY);
+  console.log("Confirm API hit => ");
   if (await checkUserExist(username)) {
     confirmUser(username);
   }
@@ -120,10 +121,12 @@ app.get("/isChangingPass/:token", async (req, res) => {
 
 app.post("/forgotPassword", async (req, res) => {
   const { email } = req.body;
+  console.log("[FORGOT PASSWORD API HIT]");
   if (await checkUserExist(email)) {
-    changePasswordToken(email);
+    // changePasswordToken(email); //Todo uncomment
+    res.json({ success: true });
   } else {
-    res.json({ error: "Email Doesn't Exist" });
+    res.json({ error: "Email Doesn't Exist", success: false });
   }
 });
 

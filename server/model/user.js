@@ -19,7 +19,7 @@ const hashPassword = async (password) => {
 const createUser = async (usrData) => {
   try {
     console.log(usrData);
-    const { passwordSalt, passwordHash, hashAlgorithm } = hashPassword(
+    const { passwordSalt, passwordHash, hashAlgorithm } = await hashPassword(
       usrData.password
     );
     usrData.passwordSalt = passwordSalt;
@@ -33,7 +33,7 @@ const createUser = async (usrData) => {
 
     const text = `http://localhost:4000/confirm/${token}`;
 
-    console.log(usrData.email);
+    console.log(usrData);
     const options = {
       from: USER_EMAIL,
       to: usrData.email,
@@ -96,7 +96,7 @@ const updateUserPassword = async (password, email) => {
 const confirmUser = async (username) => {
   try {
     const tblName = "tbl_user_login_data";
-    update(tblName, { confirmEmail: true }, { username: `${username}` });
+    update(tblName, { confirmEmail: 1 }, { username: `${username}` });
   } catch (e) {
     console.log(e);
   }

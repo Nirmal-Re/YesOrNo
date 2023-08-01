@@ -14,6 +14,7 @@ import LoggedRoutes from "./privateRoute/loggedRoutes";
 import UnloggedRoutes from "./privateRoute/unloggedRoutes";
 import ChangePasswordRoute from "./privateRoute/changePasswordRoute";
 import ChangePassword from "./pages/authentication/changePassword";
+import ForgotPassword from "./pages/authentication/fogotPassword";
 import "./index.css";
 
 function App() {
@@ -53,6 +54,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Register />} />
+          <Route path="/forgotPassword" element={<ForgotPassword />} />
           <Route path="/" element={<Index />} />
         </Route>
         <Route path="/" element={<Index />} />

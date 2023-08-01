@@ -7,8 +7,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 //css
-import "./css/login.module.scss";
-import styles from "./css/login.module.scss";
+import styles from "./css/authenticate.module.scss";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -28,7 +27,7 @@ export default function Login() {
   return (
     <div className={styles.authenticateForm}>
       <div className={styles.header}> Login</div>
-      <Form onSubmit={handleSubmit} className={styles.loginForm}>
+      <Form onSubmit={handleSubmit} className={styles.formStyles}>
         <Form.Group className={`mb-3`} controlId="formBasicPassword">
           <Form.Control
             className={`${styles.input}`}
