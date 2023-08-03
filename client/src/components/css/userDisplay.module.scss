@@ -1,0 +1,27 @@
+.userDisplayContainer {
+  width: 60%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.userPhotoSection {
+  background: blue;
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+}
+
+.summary {
+  width: 90%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  justify-items: center;
+  align-items: center;
+}
+
+.center {
+  text-align: center;
+}

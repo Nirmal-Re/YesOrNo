@@ -12,10 +12,10 @@ const {
   confirmUser,
   changePasswordToken,
   updateUserPassword,
-  queryUserID,
+  getUserID,
 } = require("../model/user.js");
 
-const { makeDecision } = require("../model/decision.js");
+const { makeDecision, getDecisions } = require("../model/decision.js");
 const { TOKEN_SECRET_KEY, PASSWORD_SECRET_KEY } = require("../constants");
 const { FRONT_END_URL } = process.env;
 
@@ -153,15 +153,25 @@ app.post("/decisionMade", async (req, res) => {
     const { username } = req.session.user;
     const { decision } = req.body;
     const value = ["GY", "GN", "BY", "BN"].includes(decision);
-    //very close to finishing decision made
-    // I stopped here because i need to modify retrieve function in db.js to more be more generic
+    if (value) {
+      makeDecision({ username, decision });
+    }
     res.send({ username, decision, value });
   } else {
     res.send({ val: "val" });
   }
+});
 
-  //user ID
-  //decision type
+app.get("/userSummaryData", async (req, res) => {
+  try {
+    if (req.session.authenticated) {
+      const { username } = req.session.user;
+      getDecisions({ username });
+      res.status(200).json({ username });
+    }
+  } catch (e) {
+    console.log(e);
+  }
 });
 
 app.get("/*", (req, res) => {

@@ -14,7 +14,7 @@ import LoggedRoutes from "./privateRoute/loggedRoutes";
 import UnloggedRoutes from "./privateRoute/unloggedRoutes";
 import ChangePasswordRoute from "./privateRoute/changePasswordRoute";
 import ChangePassword from "./pages/authentication/changePassword";
-import ForgotPassword from "./pages/authentication/fogotPassword";
+import ForgotPassword from "./pages/authentication/forgotPassword";
 import "./index.css";
 
 function App() {
@@ -23,8 +23,8 @@ function App() {
   const { REACT_APP_BACKEND_URL } = process.env;
 
   const isLoggedIn = async () => {
-    const url = `${REACT_APP_BACKEND_URL}/isLoggedin`;
-    const response = await axios.get(url, { withCredentials: true });
+    const URL = `${REACT_APP_BACKEND_URL}/isLoggedin`;
+    const response = await axios.get(URL, { withCredentials: true });
     setUserStatus(response.data);
   };
 

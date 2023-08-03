@@ -6,7 +6,7 @@ const {
   USER_EMAIL,
 } = require("../constants");
 
-const { insert, retrieve, checkKeyValueExist, update } = require("./db");
+const { insert, getRowData, checkKeyValueExist, update } = require("./db");
 const { send } = require("../email/email.js");
 
 const hashPassword = async (password) => {
@@ -49,12 +49,13 @@ const createUser = async (usrData) => {
   }
 };
 
-const queryUserID = async (userIdentifier) => {
+const getUserID = async (userIdentifier) => {
   try {
-    const valueReturned = await retrieve(
+    const valueReturned = await getRowData(
       "tbl_user_login_data",
       ["ID"],
-      userIdentifier
+      userIdentifier,
+      "OR"
     );
     return valueReturned.ID;
   } catch (e) {
@@ -65,8 +66,10 @@ const queryUserID = async (userIdentifier) => {
 const checkUserExist = async (value) => {
   try {
     const tblName = "tbl_user_login_data";
-    const keys = ["username", "email"];
-    const check = await checkKeyValueExist(tblName, keys, value);
+    const check = await checkKeyValueExist(tblName, {
+      username: value,
+      email: value,
+    });
     if (check?.exist) {
       return true;
     } else {
@@ -81,7 +84,12 @@ const checkPass = async (userData) => {
     const { username, password } = userData;
     const tblName = "tbl_user_login_data";
     const fields = ["username", "passwordHash", "passwordSalt"];
-    const dbData = await retrieve(tblName, fields, username);
+    const dbData = await getRowData(
+      tblName,
+      fields,
+      { username, email: username },
+      "OR"
+    );
     const usrPassHash = await bcrypt.hash(password, dbData.passwordHash);
     if (dbData.passwordHash === usrPassHash) {
       return true;
@@ -130,7 +138,6 @@ const changePasswordToken = async (email) => {
   };
   send(options);
 };
-queryUserID("nbhan");
 module.exports = {
   createUser,
   checkPass,
@@ -138,5 +145,5 @@ module.exports = {
   confirmUser,
   changePasswordToken,
   updateUserPassword,
-  queryUserID,
+  getUserID,
 };

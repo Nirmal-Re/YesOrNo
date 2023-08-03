@@ -2,7 +2,7 @@ import homeCSS from "./css/home.module.scss";
 import { Button } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { resolvePath } from "react-router-dom";
+import UserDisplay from "../components/userDisplay";
 
 export default function Dashboard() {
   const [decision, setDecision] = useState();
@@ -29,7 +29,7 @@ export default function Dashboard() {
   return (
     <div className={homeCSS.pageContainer}>
       <div className={homeCSS.welcomeUser}>
-        <span className={homeCSS.message}>center</span>
+        <UserDisplay />
       </div>
       <div className={homeCSS.optionsContainer}>
         <div className={homeCSS.options}>
