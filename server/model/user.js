@@ -49,6 +49,19 @@ const createUser = async (usrData) => {
   }
 };
 
+const queryUserID = async (userIdentifier) => {
+  try {
+    const valueReturned = await retrieve(
+      "tbl_user_login_data",
+      ["ID"],
+      userIdentifier
+    );
+    return valueReturned.ID;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 const checkUserExist = async (value) => {
   try {
     const tblName = "tbl_user_login_data";
@@ -117,6 +130,7 @@ const changePasswordToken = async (email) => {
   };
   send(options);
 };
+queryUserID("nbhan");
 module.exports = {
   createUser,
   checkPass,
@@ -124,4 +138,5 @@ module.exports = {
   confirmUser,
   changePasswordToken,
   updateUserPassword,
+  queryUserID,
 };

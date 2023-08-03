@@ -12,17 +12,24 @@ import styles from "./css/authenticate.module.scss";
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const url = `${process.env.REACT_APP_BACKEND_URL}/login`;
     const userdata = { username, password };
-    axios.post(url, userdata, { withCredentials: true }).then((response) => {
-      if (response.data.loggedIn) {
-        navigate("/dashboard");
-      }
-    });
+    axios
+      .post(url, userdata, { withCredentials: true })
+      .then((response) => {
+        if (response.data.loggedIn) {
+          navigate("/dashboard");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        setErrorMessage(error.response.data.error);
+      });
   };
   return (
     <div className={styles.authenticateForm}>
@@ -53,6 +60,7 @@ export default function Login() {
           Log In
         </Button>
       </Form>
+      {errorMessage && <div className={styles.error}>{errorMessage}</div>}
       <div className={styles.bottom}>
         <div>
           <input type="checkbox" />{" "}

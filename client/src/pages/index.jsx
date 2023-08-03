@@ -21,7 +21,7 @@ class Index extends Component {
             </Button>
           </div>
           <div className={homeCSS.signupContainer}>
-            <Button className={homeCSS.txt} variant="danger" size="lg">
+            <Button className={homeCSS.txt} variant="dark" size="lg">
               <a href="/signup">SIGN UP</a>
             </Button>
           </div>

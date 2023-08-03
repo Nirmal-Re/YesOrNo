@@ -17,11 +17,11 @@ export default function Register() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const url = `${process.env.REACT_APP_BACKEND_URL}/userdata`;
+    const url = `${process.env.REACT_APP_BACKEND_URL}/signup`;
     const userdata = { firstName, lastName, email, username, password };
     console.log(userdata);
     axios.post(url, userdata, { withCredentials: true }).then((response) => {
-      if (response.data.loggedIn) {
+      if (response.data.success) {
         navigate("/login");
       }
     });

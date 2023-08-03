@@ -12,7 +12,10 @@ const {
   confirmUser,
   changePasswordToken,
   updateUserPassword,
+  queryUserID,
 } = require("../model/user.js");
+
+const { makeDecision } = require("../model/decision.js");
 const { TOKEN_SECRET_KEY, PASSWORD_SECRET_KEY } = require("../constants");
 const { FRONT_END_URL } = process.env;
 
@@ -41,12 +44,12 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, "/../../client/build")));
 
-app.post("/userdata", async (req, res) => {
+app.post("/signup", async (req, res) => {
   console.log("User Data Route Accessed");
+  //TODO authenticate data sent by the user
   const usrData = req.body;
-  //TODO Check if username or Email already exist
   await createUser(usrData);
-  res.redirect(`${FRONT_END_URL}/login`);
+  res.json({ success: true });
 });
 
 app.post("/login", async (req, res) => {
@@ -68,9 +71,7 @@ app.post("/login", async (req, res) => {
     req.session.save();
     return res.json({ loggedIn: true });
   } else {
-    return res.send({
-      message: "Incorrect Password",
-    });
+    return res.status(401).json({ error: "Invalid username or password" });
   }
 });
 
@@ -123,23 +124,12 @@ app.post("/forgotPassword", async (req, res) => {
   const { email } = req.body;
   console.log("[FORGOT PASSWORD API HIT]");
   if (await checkUserExist(email)) {
-    // changePasswordToken(email); //Todo uncomment
+    changePasswordToken(email);
     res.json({ success: true });
   } else {
     res.json({ error: "Email Doesn't Exist", success: false });
   }
 });
-
-// app.get("/changePassword/:token", async (req, res) => {
-//   const { token } = req.params;
-//   const { email } = jwt.verify(token, PASSWORD_SECRET_KEY);
-//   if (await checkUserExist(email)) {
-//     res.send({ passChange: true });
-//     // res.redirect(`/resetPassword/${token}`);
-//   } else {
-//     res.json({ error: "something went wrong" });
-//   }
-// });
 
 app.post("/resetPassword/:token", async (req, res) => {
   try {
@@ -156,6 +146,22 @@ app.post("/resetPassword/:token", async (req, res) => {
       res.json({ error: "Something went wrong" });
     }
   } catch (e) {}
+});
+
+app.post("/decisionMade", async (req, res) => {
+  if (req.session.authenticated) {
+    const { username } = req.session.user;
+    const { decision } = req.body;
+    const value = ["GY", "GN", "BY", "BN"].includes(decision);
+    //very close to finishing decision made
+    // I stopped here because i need to modify retrieve function in db.js to more be more generic
+    res.send({ username, decision, value });
+  } else {
+    res.send({ val: "val" });
+  }
+
+  //user ID
+  //decision type
 });
 
 app.get("/*", (req, res) => {
