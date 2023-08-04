@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import UserPhoto from "./userPhoto";
 import styles from "./css/userDisplay.module.scss";
 import axios from "axios";
 
@@ -23,7 +24,7 @@ export default function UserDisplay() {
   }, []);
   return (
     <div className={styles.userDisplayContainer}>
-      <div className={styles.userPhotoSection}></div>
+      <UserPhoto />
       <h3>Hello, {username}</h3>
       <h2> Last 30 days Summary</h2>
       <div className={styles.summary}>

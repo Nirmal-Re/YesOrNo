@@ -9,6 +9,13 @@ export default function NavBar({ data, onLogout }) {
           <Nav.Link className="text-white" href="/">
             Home
           </Nav.Link>
+          {data?.loggedIn ? (
+            <Nav.Link className="text-white" href="/profile">
+              Profile
+            </Nav.Link>
+          ) : (
+            <></>
+          )}
           <Nav.Link className="text-white" href="/about">
             About
           </Nav.Link>

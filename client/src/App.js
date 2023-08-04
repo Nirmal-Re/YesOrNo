@@ -7,6 +7,7 @@ import Index from "./pages";
 import Dashboard from "./pages/dashboard";
 import About from "./pages/about";
 import Contact from "./pages/contact";
+import Profile from "./pages/profile";
 import Login from "./pages/authentication/login";
 import Register from "./pages/authentication/register";
 import NavBar from "./components/navbar";
@@ -15,10 +16,12 @@ import UnloggedRoutes from "./privateRoute/unloggedRoutes";
 import ChangePasswordRoute from "./privateRoute/changePasswordRoute";
 import ChangePassword from "./pages/authentication/changePassword";
 import ForgotPassword from "./pages/authentication/forgotPassword";
+
 import "./index.css";
 
 function App() {
-  const [userStatus, setUserStatus] = useState({ loggedIn: false });
+  const [userStatus, setUserStatus] = useState();
+  const [loading, setLoading] = useState(false);
   const location = useLocation();
   const { REACT_APP_BACKEND_URL } = process.env;
 
@@ -26,10 +29,11 @@ function App() {
     const URL = `${REACT_APP_BACKEND_URL}/isLoggedin`;
     const response = await axios.get(URL, { withCredentials: true });
     setUserStatus(response.data);
+    setLoading(true);
   };
 
   const handleLogOut = async () => {
-    const url = `http://localhost:4000/logOut`;
+    const url = `${REACT_APP_BACKEND_URL}/logOut`;
     const response = await axios.get(url, { withCredentials: true });
     setUserStatus(response.data);
   };
@@ -46,17 +50,24 @@ function App() {
         style={{ position: "fixed" }}
       />
       <Routes>
-        <Route element={<LoggedRoutes data={userStatus} />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-        </Route>
+        {loading ? (
+          <>
+            <Route element={<LoggedRoutes data={userStatus} />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/profile" element={<Profile />} />
+            </Route>
+            <Route element={<UnloggedRoutes data={userStatus} />}>
+              <Route path="/register" element={<Register />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Register />} />
+              <Route path="/forgotPassword" element={<ForgotPassword />} />
+              <Route path="/" element={<Index />} />
+            </Route>
+          </>
+        ) : (
+          "Loading"
+        )}
 
-        <Route element={<UnloggedRoutes data={userStatus} />}>
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Register />} />
-          <Route path="/forgotPassword" element={<ForgotPassword />} />
-          <Route path="/" element={<Index />} />
-        </Route>
         <Route path="/" element={<Index />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
