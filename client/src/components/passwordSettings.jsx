@@ -1,6 +1,7 @@
 import Form from "react-bootstrap/Form";
 
 export default function PasswordSettings() {
+  const handleClick = () => {};
   return (
     <>
       <Form>

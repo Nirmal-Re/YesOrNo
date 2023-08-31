@@ -5,6 +5,8 @@ const cors = require("cors");
 
 const path = require("path");
 
+const { dbConnect, checkKeyValueExist } = require("../model/db.js");
+
 const {
   createUser,
   checkPass,
@@ -13,11 +15,14 @@ const {
   changePasswordToken,
   updateUserPassword,
   getUserID,
+  updateUserEmail,
 } = require("../model/user.js");
 
 const { makeDecision, getDecisions } = require("../model/decision.js");
-const { TOKEN_SECRET_KEY, PASSWORD_SECRET_KEY } = require("../constants");
+const { TOKEN_SECRET_KEY, PASSWORD_SECRET_KEY, DB } = require("../constants");
 const { FRONT_END_URL } = process.env;
+
+dbConnect();
 
 const app = express();
 app.use(cors({ credentials: true, origin: true }));
@@ -169,6 +174,32 @@ app.get("/userSummaryData", async (req, res) => {
       getDecisions({ username });
       res.status(200).json({ username });
     }
+  } catch (e) {
+    console.log(e);
+  }
+});
+
+app.post("/updateUserData", async (req, res) => {
+  try {
+    if (!req.session.authenticated) {
+      return res.status(401).json({ message: "Failed Authentication" });
+    }
+
+    const { username } = req.session.user;
+    const { firstName, lastName, email, password } = req.body;
+
+    if (
+      !(await checkUserExist({ username })) ||
+      !(await checkPass({ username, password }))
+    ) {
+      console.log("Check Key Value Exist", checkUserExist(username));
+      console.log(checkPass({ username, password }));
+      return res
+        .status(401)
+        .json({ message: "Failed Authentication What what what" });
+    }
+    const r = await updateUserEmail({ username, firstName, lastName, email });
+    res.send({ my: "Name" });
   } catch (e) {
     console.log(e);
   }

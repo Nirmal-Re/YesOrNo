@@ -3,14 +3,14 @@ const mysql = require("mysql2/promise");
 const { DB } = require("../constants");
 
 let con;
-const dbConnect = async (dbConData) => {
-  con = await mysql.createConnection({ ...dbConData });
+const dbConnect = async () => {
+  con = await mysql.createConnection({ ...DB });
+  console.log("[Database Connection Successful]");
   return con;
 };
 
 const insert = async (tblName, data) => {
   try {
-    await dbConnect(DB);
     con.query(`INSERT INTO ${tblName} SET ?`, data);
   } catch (e) {
     console.log(e);
@@ -18,7 +18,6 @@ const insert = async (tblName, data) => {
 };
 
 const executeSQLQuery = async (query) => {
-  await dbConnect(DB);
   console.log(query);
   const data = await con.query(query);
   return data[0];
@@ -50,7 +49,6 @@ const getRowData = async (tblName, fileds, identifier, type) => {
 
 const checkKeyValueExist = async (tblName, identifier) => {
   try {
-    await dbConnect(DB);
     const conditions = equalTo(identifier);
     const qData = await con.query(
       `SELECT 1 AS exist FROM ${tblName} WHERE ${conditions.join(" OR ")}`
@@ -63,8 +61,6 @@ const checkKeyValueExist = async (tblName, identifier) => {
 
 const update = async (tblName, toSet, condition) => {
   try {
-    await dbConnect(DB);
-
     const set = equalTo(toSet);
     const cond = equalTo(condition);
     const qry = `UPDATE ${tblName} SET ${set.join(",")} WHERE ${cond.join(
@@ -86,6 +82,7 @@ module.exports = {
   update,
   getRowData,
   executeSQLQuery,
+  dbConnect,
 };
 
 // const dummy_userData = {

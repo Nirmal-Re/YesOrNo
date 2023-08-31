@@ -71,6 +71,7 @@ const checkUserExist = async (value) => {
       email: value,
     });
     if (check?.exist) {
+      console.log("checkUserExistoidjhfziuvbhnzxiucnvbo'jzxn'vkojna dzo'fjva");
       return true;
     } else {
       return false;
@@ -138,6 +139,16 @@ const changePasswordToken = async (email) => {
   };
   send(options);
 };
+
+const updateUserEmail = async (data) => {
+  const { email, username } = data;
+  const returnValue = await update(
+    "tbl_user_login_data",
+    { email },
+    { username }
+  );
+  return returnValue;
+};
 module.exports = {
   createUser,
   checkPass,
@@ -146,4 +157,5 @@ module.exports = {
   changePasswordToken,
   updateUserPassword,
   getUserID,
+  updateUserEmail,
 };
